@@ -1,8 +1,13 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Routing;
+using System.Net;
 
-namespace Producer_ProductApi
+namespace Common.Middleware
 {
-    public  class ProduceFailMiddleware
+    //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-6.0
+    public class ProduceFailMiddleware
     {
         private readonly RequestDelegate _next;
         private static bool enabled = false;
@@ -36,17 +41,18 @@ namespace Producer_ProductApi
             }
             if (enabled)
             {
-                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await httpContext.Response.WriteAsync("Fial produced by middleware");
+                httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;                
                 return;
             }
             await _next(httpContext);
         }
     }
+    //register
     public static class ProduceFailMiddlewareExtensions
     {
-        public static IApplicationBuilder UseProduceFail(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseProduceFailMiddleware(this IApplicationBuilder builder)
         {
+            var middleBuilder = new RouteBuilder(builder);
             return builder.UseMiddleware<ProduceFailMiddleware>();
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Model
+﻿namespace Common.Model
 {
     public class Product
     {

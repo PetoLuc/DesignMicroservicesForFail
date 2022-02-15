@@ -1,4 +1,4 @@
-﻿using Model;
+﻿using Common.Model;
 
 namespace OrderApi
 {

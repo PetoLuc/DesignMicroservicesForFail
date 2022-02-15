@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HttpClientTyped\HttpClientTyped.csproj" />
+    <ProjectReference Include="..\Model\Common.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
-using HttpClientTyped;
-using OrderApi;
+
+using Common.HttpTypedClient;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
@@ -23,6 +23,7 @@ void ConfigureServices(IServiceCollection services)
     services.AddHttpClient("ProductApiClient1", c => { c.BaseAddress = productApiEndpointAddress; })
         .AddPolicyHandler(GetRetryPolicy()); 
 
+    //register typed client
     services.AddHttpClient<IProductServiceClient, ProductServiceClient>(c =>  {c.BaseAddress = productApiEndpointAddress;})    
     .AddPolicyHandler(GetCircuitBreakerPolicy());
 

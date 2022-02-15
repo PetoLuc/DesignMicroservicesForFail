@@ -1,7 +1,7 @@
+using Common.HealthCheck;
+using Common.Middleware;
 using HealthChecks.UI.Client;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Producer_ProductApi;
+
 using ProductApi;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +14,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseRouting();
-
+#region registerpossibilities
 //app.UseEndpoints(endpoints => 
 //{ 
 //    endpoints.MapHealthChecks("/hcJson", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions() 
@@ -26,31 +26,37 @@ app.UseRouting();
 //    {        
 //    });
 //});
-
-app.UseHealthChecks("/hcJson", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
+//app.MapHealthChecks("/healthz");
+//app.MapHealthChecks("/hc/ready", new HealthCheckOptions
+//{
+//    Predicate = healthCheck => healthCheck.Tags.Contains("ready")
+//});
+#endregion registerpossibilities
+//use healthcheck as jsom output
+app.UseHealthChecks("/hc-json", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
 {
     Predicate = _ => true,
     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
 });
-app.UseHealthChecks("/hc", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions()
-{
-});
+//use simple healthcheck
+app.UseHealthChecks("/hc");
 
+//configure paths for HC-UI
 app.UseHealthChecksUI(config => { config.UIPath = "/hc-ui"; config.ApiPath = "/hc-api"; }) ;
 
 app.MapControllers();
-app.UseProduceFail();
+app.UseProduceFailMiddleware();
 app.Run();
 
 void ConfigureServices(IServiceCollection services)
-{    
-    services.AddScoped<IProductService, ProductService>();        
+{
+    services.AddScoped<IProductService, ProductService>();
     services.AddControllers();
+    //register health check methods
     services.AddHealthChecks()
-    .AddCheck("randomfail", () =>
-    {
-        return Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy();
-    })
-    .AddCheck("always OK", new HealthCheckAlwaysOK(), Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy, new string[] { "does not matter" });
-    services.AddHealthChecksUI().AddInMemoryStorage();
+    .AddCheck("up", () => new Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult(Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy, "OK"))
+    .AddCheck("random fault",   new HealthCheckRandomFail(), Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy, new string[] { "does not matter" });
+
+    //register healthcheck UI
+    services.AddHealthChecksUI(settings=> {  }).AddInMemoryStorage();
 }

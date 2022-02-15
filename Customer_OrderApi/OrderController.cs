@@ -1,7 +1,7 @@
-﻿using HttpClientTyped;
-using Microsoft.AspNetCore.Mvc;
-using Model;
+﻿using Microsoft.AspNetCore.Mvc;
+using Common.Model;
 using Polly.CircuitBreaker;
+using Common.HttpTypedClient;
 
 namespace OrderApi
 {
