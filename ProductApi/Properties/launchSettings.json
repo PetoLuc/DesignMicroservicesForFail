@@ -12,7 +12,7 @@
     "ProductApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/Product",
       "applicationUrl": "http://localhost:5166",
       "environmentVariables": {

@@ -12,7 +12,7 @@
     "CircuitBreakerPattern": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "api/Order/GetOrderDetails2/1",
       "applicationUrl": "http://localhost:5242",
       "environmentVariables": {

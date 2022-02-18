@@ -41,9 +41,6 @@ app.UseHealthChecks("/hc-json", new Microsoft.AspNetCore.Diagnostics.HealthCheck
 //use simple healthcheck
 app.UseHealthChecks("/hc");
 
-//configure paths for HC-UI
-app.UseHealthChecksUI(config => { config.UIPath = "/hc-ui"; config.ApiPath = "/hc-api"; }) ;
-
 app.MapControllers();
 app.UseProduceFailMiddleware();
 app.Run();
@@ -56,7 +53,4 @@ void ConfigureServices(IServiceCollection services)
     services.AddHealthChecks()
     .AddCheck("up", () => new Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult(Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy, "OK"))
     .AddCheck("random fault",   new HealthCheckRandomFail(), Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Unhealthy, new string[] { "does not matter" });
-
-    //register healthcheck UI
-    services.AddHealthChecksUI(settings=> {  }).AddInMemoryStorage();
 }
